@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { sendChatGptQuery, parseChatGptResult } from "./chatgpt";
+import { parseSerpResponse, sendSerpQuery } from "./serp";
 
 const queryClient = new QueryClient()
 
@@ -27,7 +28,10 @@ export function Main() {
       height: "200px",
     }}>
       <h1>Timmy AI</h1>
+      <p>Powered by SerpAPI and ChatGPT</p>
+
       <br />
+
       <h6>Please enter a query: </h6>
       <br />
       <input
@@ -38,6 +42,9 @@ export function Main() {
       />
 
       <button onClick={() => setQuery(inputState)}> Submit Query</button>
+
+      <br />
+      <br />
 
       {data && <RenderResult queryResult={data} />}
 
@@ -56,13 +63,20 @@ type QueryResult = {
 }
 
 
-async function sendQuery(query: string): Promise<QueryResult> {
-  console.log("CALL sendQuery");
+async function sendQuery(query: string): Promise<QueryResult | null> {
+  console.log("CALL sendQuery + " + query)
+  if (query === "") {
+    return null;
+  }
+
   const chatGptRawResult = await sendChatGptQuery(query);
   const chatGptResult = parseChatGptResult(chatGptRawResult);
 
+  const serpResponse = await sendSerpQuery(query);
+  const serpApiResult = parseSerpResponse(serpResponse);
+
   return {
-    serpApiResult: "Hello World",
+    serpApiResult,
     chatGptResult,
   }
 }
