@@ -5,7 +5,7 @@ export async function sendSerpQuery(query: string): Promise<BaseResponse> {
 }
 
 export function parseSerpResponse(response: BaseResponse): string {
-    console.log("call parseSerpResponse + " + resopnse);
+    console.log("call parseSerpResponse + " + response);
     return JSON.stringify(response);
 }
 

@@ -58,8 +58,9 @@ function RenderResult({ queryResult }: { queryResult: QueryResult }) {
 
 
 type QueryResult = {
-  serpApiResult: string,
   chatGptResult: string,
+  serpApiResult: string,
+
 }
 
 
@@ -76,8 +77,8 @@ async function sendQuery(query: string): Promise<QueryResult | null> {
   const serpApiResult = parseSerpResponse(serpResponse);
 
   return {
-    serpApiResult,
     chatGptResult,
+    serpApiResult,
   }
 }
 
