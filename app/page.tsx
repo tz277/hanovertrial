@@ -1,7 +1,69 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
+import { sendChatGptQuery, parseChatGptResult } from "./chatgpt";
+
+const queryClient = new QueryClient()
 
 export default function Home() {
   return (
-    <>Hello World</>
+    <QueryClientProvider client={queryClient}>
+      <Main />
+    </QueryClientProvider>
+  )
+}
+
+export function Main() {
+  const [inputState, setInputState] = useState("");
+  const [query, setQuery] = useState("")
+
+  const { data } = useQuery({ queryKey: ['main', query], queryFn: () => sendQuery(query) })
+
+  return (
+    <div style={{
+      justifyContent: "center",
+      width: "300px",
+      height: "200px",
+    }}>
+      <h1>Timmy AI</h1>
+      <br />
+      <h6>Please enter a query: </h6>
+      <br />
+      <input
+        type="text"
+        value={inputState}
+        onChange={(e) => setInputState(e.target.value)}
+        style={{ backgroundColor: "#333" }}
+      />
+
+      <button onClick={() => setQuery(inputState)}> Submit Query</button>
+
+      {data && <RenderResult queryResult={data} />}
+
+    </div>
   );
 }
+
+function RenderResult({ queryResult }: { queryResult: QueryResult }) {
+  return <>{JSON.stringify(queryResult)}</>
+}
+
+
+type QueryResult = {
+  serpApiResult: string,
+  chatGptResult: string,
+}
+
+
+async function sendQuery(query: string): Promise<QueryResult> {
+  console.log("CALL sendQuery");
+  const chatGptRawResult = await sendChatGptQuery(query);
+  const chatGptResult = parseChatGptResult(chatGptRawResult);
+
+  return {
+    serpApiResult: "Hello World",
+    chatGptResult,
+  }
+}
+

@@ -1,0 +1,3 @@
+export const OPENAI_API_KEY = "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"
+
+export const SERP_API_KEY = "6bf08b0972334a9d88db8aab837149c4d9c31155435d563fce028f9039455132"
